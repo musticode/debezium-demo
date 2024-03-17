@@ -15,7 +15,6 @@ import java.util.List;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 
-    // https://youtu.be/0TR6VhfaWj0?t=1085
 
     private final ProductRepository productRepository;
     private final ProductEventProducer productEventProducer;
@@ -33,9 +32,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setStock(product.getStock());
         newProduct.setName(product.getName());
         newProduct.setPrice(product.getPrice());
-
         productEventProducer.sendMessage(newProduct);
-
         return  productRepository.save(newProduct);
     }
 
@@ -44,15 +41,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
-
     @Override
     public Product updateProduct(long productId, Product updatedProduct) {
-
         final Product currentProduct = productRepository.findById(productId).orElseThrow(()-> new RuntimeException("No currentProduct with id"));
         currentProduct.setName(updatedProduct.getName());
         currentProduct.setPrice(updatedProduct.getPrice());
         currentProduct.setStock(updatedProduct.getStock());
-
         return productRepository.save(currentProduct);
     }
 

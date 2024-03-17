@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 public class ProductMessageDeserializer implements Deserializer<ProductMessage> {
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
@@ -20,13 +20,11 @@ public class ProductMessageDeserializer implements Deserializer<ProductMessage> 
 
     @Override
     public ProductMessage deserialize(String topic, byte[] data) {
-
         try {
             return objectMapper.readValue(data, ProductMessage.class);
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-
     }
 
 
