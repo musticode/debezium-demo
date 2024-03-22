@@ -27,17 +27,14 @@ public class ProductMessageDeserializer implements Deserializer<ProductMessage> 
         }
     }
 
-
     @Override
     public ProductMessage deserialize(String topic, Headers headers, byte[]data){
         return Deserializer.super.deserialize(topic, headers, data);
     }
 
-
     @Override
     public void close() {
         Deserializer.super.close();
     }
-
 
 }

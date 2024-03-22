@@ -54,6 +54,16 @@ services:
     volumes:
       - ./resource/init.sql:/docker-entrypoint-initdb.d/create-db-tables.sql
 
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
   adminer:
     image: adminer
     restart: always

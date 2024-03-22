@@ -29,13 +29,11 @@ public class KafkaProductConsumerConfig {
     @Bean
     public ConsumerFactory<String, Product> consumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("auto.offset.reset", "earliest");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "product-group");
-
-        props.put("key.deserializer", StringDeserializer.class.getName());
-        props.put("value.deserializer", ProductMessageDeserializer.class.getName());
-
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ProductMessageDeserializer.class.getName());
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

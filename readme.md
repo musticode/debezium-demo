@@ -196,7 +196,7 @@ curl --location --request PUT 'localhost:8080/api/v1/product/update-product/14' 
     "stock" : 6
 }'
 ```
-- Check debezium topic:
+- Check messages in debezium topic: `product.public.product`
 ```
 {
 	"before": {

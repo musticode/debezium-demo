@@ -14,6 +14,11 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+
   kafka:
     topic:
       product-update: notification_update_topic
