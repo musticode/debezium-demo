@@ -4,13 +4,13 @@ import com.debezium.debeziumdemo.constant.KafkaConstant;
 import com.debezium.debeziumdemo.event.ProductMessage;
 import com.debezium.debeziumdemo.model.Product;
 import com.debezium.debeziumdemo.model.ProductEs;
+import com.debezium.debeziumdemo.service.ProductService;
 import com.debezium.debeziumdemo.service.impl.ProductEsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 
 @Service
@@ -18,9 +18,11 @@ import java.text.DecimalFormat;
 public class ProductConsumer {
 
     private final ProductEsServiceImpl productEsService;
+    private final ProductService productService;
 
-    public ProductConsumer(ProductEsServiceImpl productEsService) {
+    public ProductConsumer(ProductEsServiceImpl productEsService, ProductService productService) {
         this.productEsService = productEsService;
+        this.productService = productService;
     }
 
 
@@ -29,14 +31,25 @@ public class ProductConsumer {
             groupId = KafkaConstant.PRODUCT_GROUP_ID
     )
     public void consume(ProductMessage message){
-        log.info("Event consumeeedd : {}", message);
+
+        log.info("Debezium event consumed : {}", message);
 
         if (message.getOp().equals("u")){
             log.info("UPDATE");
 
-            //es'ten id ile bak, sonrasında o id ile update et
-            //productEsService.updateProduct()
+            Product product = productService.findProductById(message.getBefore().getId()); //before'dan gelen product'ın id'si
 
+            Product updatedProduct = new Product();
+            updatedProduct.setName(message.getAfter().getName());
+            updatedProduct.setPrice(new BigDecimal(message.getAfter().getPrice()));
+            updatedProduct.setStock(message.getAfter().getStock());
+
+            log.info("Updated product : {}", updatedProduct);
+
+            productEsService.updateProduct(
+                    String.valueOf(product.getId()),
+                    updatedProduct
+            );
 
 
         } else if (message.getOp().equals("c")) {
@@ -47,7 +60,16 @@ public class ProductConsumer {
             product.setPrice(new BigDecimal(message.getAfter().getPrice()));
             product.setStock(message.getAfter().getStock());
             productEsService.save(product);
+
+        }else {
+            log.info("DELETE");
+
+            final ProductEs productEs = productEsService.findProductById(String.valueOf(message.getAfter().getId()));
+            productEsService.deleteProduct(productEs.getId());
         }
+
+
+
     }
 
 

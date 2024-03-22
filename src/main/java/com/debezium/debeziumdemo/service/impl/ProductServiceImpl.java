@@ -1,6 +1,7 @@
 package com.debezium.debeziumdemo.service.impl;
 
 import com.debezium.debeziumdemo.dto.ProductDto;
+import com.debezium.debeziumdemo.exception.product.ProductNotFoundException;
 import com.debezium.debeziumdemo.model.Product;
 import com.debezium.debeziumdemo.repository.ProductRepository;
 import com.debezium.debeziumdemo.service.ProductService;
@@ -43,11 +44,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(long productId, Product updatedProduct) {
-        final Product currentProduct = productRepository.findById(productId).orElseThrow(()-> new RuntimeException("No currentProduct with id"));
+        final Product currentProduct = productRepository.findById(productId).orElseThrow(()-> new ProductNotFoundException("No currentProduct with id"));
         currentProduct.setName(updatedProduct.getName());
         currentProduct.setPrice(updatedProduct.getPrice());
         currentProduct.setStock(updatedProduct.getStock());
         return productRepository.save(currentProduct);
+    }
+
+    @Override
+    public Product findProductById(long productId) {
+        return productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException("Product not found"));
     }
 
 

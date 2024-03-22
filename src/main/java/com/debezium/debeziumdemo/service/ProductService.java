@@ -10,4 +10,6 @@ public interface ProductService {
     List<Product> getAllProducts();
 
     Product updateProduct(long productId, Product updatedProduct);
+
+    Product findProductById(long productId);
 }
